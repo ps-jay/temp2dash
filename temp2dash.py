@@ -4,7 +4,7 @@ import sys
 from temperusb import TemperHandler
 
 
-URL="http://localhost:3030/widgets/inside"
+URL="http://dashing:3030/widgets/inside"
 SCALE=1.0
 OFFSET=-3.0
 

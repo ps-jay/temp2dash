@@ -1,0 +1,31 @@
+FROM hypriot/rpi-alpine-scratch
+
+MAINTAINER Philip Jay <phil@jay.id.au>
+
+ENV TZ Australia/Melbourne
+
+RUN apk update \
+ && apk upgrade \
+ && apk add \
+      bash \
+      libusb \
+      openssl \
+      python \
+      tzdata \
+ && rm -rf /var/cache/apk/*
+
+RUN wget https://bootstrap.pypa.io/get-pip.py \
+ && python get-pip.py \
+ && rm -rf \
+      get-pip.py \
+      /root/.cache/
+
+RUN pip install \
+      requests \
+      temperusb \
+ && rm -rf /root/.cache/
+
+RUN mkdir -p /opt/temp2dash
+ADD *.py /opt/temp2dash/
+
+CMD [ "python", "/opt/temp2dash/temp2dash.py" ]

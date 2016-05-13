@@ -4,7 +4,11 @@ MAINTAINER Philip Jay <phil@jay.id.au>
 
 ENV TZ Australia/Melbourne
 
-RUN pip install -U pip requests https://github.com/ps-jay/temper-python/archive/devel.zip
+RUN pip install --upgrade \
+      pip \
+      requests \
+      temperusb \
+ && rm -rf /root/.cache/
 
 RUN mkdir /opt/temp2dash
 ADD *.py /opt/temp2dash/

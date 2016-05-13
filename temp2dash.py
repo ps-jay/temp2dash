@@ -1,13 +1,16 @@
 import json
+import os
 import requests
 import sys
+import time
+import traceback
 from temperusb import TemperHandler
 
-
-URL="http://dashing:3030/widgets/inside"
-SCALE=1.0
-OFFSET=-3.0
-
+URL = os.environ['DASHING_URL']
+SCALE = float(os.environ['TEMP_SCALE'])
+OFFSET = float(os.environ['TEMP_OFFSET'])
+SENSOR = int(os.environ['TEMP_SENSOR'])
+SLEEP = int(os.environ['SLEEP_TIME'])
 
 th = TemperHandler()
 devs = th.get_devices()
@@ -17,19 +20,35 @@ if len(devs) != 1:
 dev = devs[0]
 
 dev.set_calibration_data(scale=SCALE, offset=OFFSET)
-temperature = dev.get_temperature(sensor=1)
 
-payload = {
-    'auth_token': 'abcdefghijklmnopqrstuvwxyz',
-    'temperature': '%0.0f%s' % (
+while True:
+    try:
+	temperature = dev.get_temperature(sensor=SENSOR)
+    except Exception, err:
+        print "\nException on getting temperature\n"
+        print traceback.format_exc()
+
+    payload = {
+        'auth_token': 'abcdefghijklmnopqrstuvwxyz',
+        'temperature': '%0.0f%s' % (
+            temperature,
+            u'\N{DEGREE SIGN}',
+        ),
+    }
+
+    sys.stdout.write(u'%0.1f%s, ' % (
         temperature,
         u'\N{DEGREE SIGN}',
-    ),
-}
+    ))
+    sys.stdout.flush()
 
-post = requests.post(URL, data=json.dumps(payload))
+    try:
+        post = requests.post(URL, data=json.dumps(payload))
+    except Exception, err:
+        print "\nException on posting temperature to dashing\n"
+        print traceback.format_exc()
 
-if post.status_code != 204:
-    sys.exit(255)
+    if post.status_code != 204:
+        print "\nHTTP status from POST was %s (expected 204)\n" % post.status_code
 
-sys.exit(0)
+    time.sleep(SLEEP)

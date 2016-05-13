@@ -1,19 +1,31 @@
 # temp2dash
 TEMPer USB temperature to Dashing dashboard
 
-Setup: 
-
+## Build for ARM (Raspberry Pi):
 ```
-docker build --tag="local/temp2dash" .
-docker run -d -m 96m \
+docker build -t local/temp2dash -f Dockerfile.arm .
+```
+
+## Build for x86 (everything else!):
+```
+docker build -t local/temp2dash -f Dockerfile.x86 .
+``` 
+
+## Run:
+```
+docker run \
+    --detach \
+    --memory 128m \
     --privileged \
+    --restart=always \
+    --name=temp2dash \
     --link dashing:dashing \
-    --name=temp2dash local/temp2dash
+    --env DASHING_URL=http://dashing:3030/widgets/inside \
+    --env SLEEP_TIME=60 \
+    --env TEMP_SENSOR=0 \
+    --env TEMP_SCALE=1 \
+    --env TEMP_OFFSET=0 \
+    local/temp2dash
 ```
 
-Cronjob:
-
-```
-# inside temp
-* * * * * root docker start -a temp2dash 2> /dev/null
-```
+Note: `--link` is optional depending on the URL / network configuration

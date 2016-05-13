@@ -21,6 +21,7 @@ dev = devs[0]
 
 dev.set_calibration_data(scale=SCALE, offset=OFFSET)
 
+chars = 0
 while True:
     try:
 	temperature = dev.get_temperature(sensor=SENSOR)
@@ -36,10 +37,13 @@ while True:
         ),
     }
 
-    sys.stdout.write(u'%0.1f%s, ' % (
-        temperature,
-        u'\N{DEGREE SIGN}',
-    ))
+    string = ""
+    if chars > 72:
+        chars = 0
+        string = "\n" 
+    string += '%0.1f, ' % temperature
+    chars += len(string)
+    sys.stdout.write(string)
     sys.stdout.flush()
 
     try:

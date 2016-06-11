@@ -1,9 +1,16 @@
+"""
+temp2dash: Temperatures to Dashing
+"""
+
+# pylint: disable=invalid-name
+
 import json
 import os
-import requests
 import sys
 import time
 import traceback
+
+import requests
 from temperusb import TemperHandler
 
 URL = os.environ['DASHING_URL']
@@ -25,8 +32,8 @@ dev.set_calibration_data(scale=SCALE, offset=OFFSET)
 chars = 0
 while True:
     try:
-	temperature = dev.get_temperature(sensor=SENSOR)
-    except Exception, err:
+        temperature = dev.get_temperature(sensor=SENSOR)
+    except Exception, err:  # pylint: disable=broad-except
         print "\nException on getting temperature\n"
         print traceback.format_exc()
 
@@ -41,7 +48,7 @@ while True:
     string = ""
     if chars > 72:
         chars = 0
-        string = "\n" 
+        string = "\n"
     string += '%0.1f, ' % temperature
     chars += len(string)
     sys.stdout.write(string)
@@ -49,7 +56,7 @@ while True:
 
     try:
         post = requests.post(URL, data=json.dumps(payload))
-    except Exception, err:
+    except Exception, err:  # pylint: disable=broad-except
         print "\nException on posting temperature to dashing\n"
         print traceback.format_exc()
 

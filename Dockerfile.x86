@@ -6,11 +6,19 @@ ENV TZ Australia/Melbourne
 
 RUN pip install --upgrade \
       pip \
+      pylint \
       requests \
       temperusb \
  && rm -rf /root/.cache/
 
+ADD pylint.conf /root/pylint.conf
+
 RUN mkdir -p /opt/temp2dash
 ADD *.py /opt/temp2dash/
+
+RUN pylint \
+      --persistent=n \
+      --rcfile=/root/pylint.conf \
+      /opt/temp2dash/*.py
 
 CMD [ "python", "/opt/temp2dash/temp2dash.py" ]

@@ -1,14 +1,30 @@
-FROM python:2
+FROM alpine:3.2
 
 MAINTAINER Philip Jay <phil@jay.id.au>
 
 ENV TZ Australia/Melbourne
 
+RUN apk update \
+ && apk upgrade \
+ && apk add \
+      bash \
+      libusb \
+      openssl \
+      python \
+      tzdata \
+ && rm -rf /var/cache/apk/*
+
+RUN wget https://bootstrap.pypa.io/get-pip.py \
+ && python get-pip.py \
+ && rm -rf \
+      get-pip.py \
+      /root/.cache/
+
 RUN pip install --upgrade \
       pip \
       pylint \
       requests \
-      temperusb \
+      https://github.com/ps-jay/temper-python/archive/auto-detect-sensors-and-offset.zip \
  && rm -rf /root/.cache/
 
 ADD pylint.conf /root/pylint.conf

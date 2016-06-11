@@ -23,7 +23,7 @@ RUN wget https://bootstrap.pypa.io/get-pip.py \
 RUN pip install \
       pylint \
       requests \
-      temperusb \
+      https://github.com/ps-jay/temper-python/archive/auto-detect-sensors-and-offset.zip \
  && rm -rf /root/.cache/
 
 ADD pylint.conf /root/pylint.conf

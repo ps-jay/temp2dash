@@ -7,6 +7,7 @@ import traceback
 from temperusb import TemperHandler
 
 URL = os.environ['DASHING_URL']
+TOKEN = os.environ['DASHING_TOKEN']
 SCALE = float(os.environ['TEMP_SCALE'])
 OFFSET = float(os.environ['TEMP_OFFSET'])
 SENSOR = int(os.environ['TEMP_SENSOR'])
@@ -30,7 +31,7 @@ while True:
         print traceback.format_exc()
 
     payload = {
-        'auth_token': 'abcdefghijklmnopqrstuvwxyz',
+        'auth_token': TOKEN,
         'temperature': '%0.0f%s' % (
             temperature,
             u'\N{DEGREE SIGN}',

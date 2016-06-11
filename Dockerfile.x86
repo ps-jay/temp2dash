@@ -10,7 +10,7 @@ RUN pip install --upgrade \
       temperusb \
  && rm -rf /root/.cache/
 
-RUN mkdir /opt/temp2dash
+RUN mkdir -p /opt/temp2dash
 ADD *.py /opt/temp2dash/
 
 CMD [ "python", "/opt/temp2dash/temp2dash.py" ]

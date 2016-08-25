@@ -17,9 +17,9 @@ docker run \
     --detach \
     --memory 128m \
     --privileged \
+    --tty \
     --restart=always \
     --name=temp2dash \
-    --link dashing:dashing \
     --env DASHING_URL=http://dashing:3030/widgets/<id> \
     --env DASHING_TOKEN=<the_auth_token> \
     --env SLEEP_TIME=<e.g. 60> \
@@ -28,8 +28,6 @@ docker run \
     --env TEMP_OFFSET=<e.g. -2, 0, etc.> \
     local/temp2dash
 ```
-
-Note: `--link` is optional depending on the URL / network configuration
 
 ### P. Jay's params
 * TEMPer2_M12_V1.3: offset=0.5; scale=1

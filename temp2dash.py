@@ -45,14 +45,10 @@ while True:
         ),
     }
 
-    string = ""
-    if chars > 72:
-        chars = 0
-        string = "\n"
-    string += '%0.1f, ' % temperature
-    chars += len(string)
-    sys.stdout.write(string)
-    sys.stdout.flush()
+    print u"%s - %0.1f\u2103C" % (
+        time.strftime("%Y-%m-%d %H:%M:%S"),
+        temperature,
+    )
 
     try:
         post = requests.post(URL, data=json.dumps(payload))

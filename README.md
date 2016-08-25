@@ -32,5 +32,5 @@ docker run \
 Note: `--link` is optional depending on the URL / network configuration
 
 ### P. Jay's params
-* TEMPer2_M12_V1.3: offset=-0.5; scale=1
+* TEMPer2_M12_V1.3: offset=0.5; scale=1
 * TEMPerV1.4: offset=-7.2; scale=1

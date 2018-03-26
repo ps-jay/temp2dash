@@ -23,12 +23,7 @@ docker run \
     --env DASHING_URL=http://<host>:3030/widgets/<id> \
     --env DASHING_TOKEN=<the_auth_token> \
     --env SLEEP_TIME=<e.g. 60> \
-    --env TEMP_SENSOR=<e.g. 0, or 1> \
     --env TEMP_SCALE=<e.g. 1, 0.8, etc.> \
     --env TEMP_OFFSET=<e.g. -2, 0, etc.> \
     local/temp2dash
 ```
-
-### P. Jay's params
-* TEMPer2_M12_V1.3: offset=1; scale=1
-* TEMPerV1.4: offset=-9; scale=1

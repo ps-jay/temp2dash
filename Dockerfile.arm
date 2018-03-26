@@ -1,39 +1,34 @@
-FROM hypriot/rpi-alpine-scratch
+FROM resin/rpi-raspbian
 
 MAINTAINER Philip Jay <phil@jay.id.au>
 
 ENV TZ Australia/Melbourne
 
-RUN apk update \
- && apk upgrade \
- && apk add \
-      bash \
-      libusb \
-      openssl \
-      python \
-      tzdata \
- && rm -rf /var/cache/apk/*
+RUN apt-get update \
+ && apt-get upgrade
 
-RUN wget https://bootstrap.pypa.io/get-pip.py \
- && python get-pip.py \
- && rm -rf \
-      get-pip.py \
-      /root/.cache/
+RUN apt-get install --no-install-recommends \
+      apt-utils \
+      python3 \
+      python3-pip
 
-RUN pip install \
-      pylint \
-      requests \
-      https://github.com/ps-jay/temper-python/archive/auto-detect-sensors-and-offset.zip \
- && rm -rf /root/.cache/
+RUN apt-get install --no-install-recommends \
+      raspi-gpio \
+      python3-rpi.gpio
+
+RUN apt-get install --no-install-recommends \
+      python3-spidev \
+      python3-smbus
+
+RUN pip3 install \
+      envirophat \
+      pylint
 
 ADD pylint.conf /root/pylint.conf
 
 RUN mkdir -p /opt/temp2dash
 ADD *.py /opt/temp2dash/
 
-RUN pylint \
-      --persistent=n \
-      --rcfile=/root/pylint.conf \
-      /opt/temp2dash/*.py
+RUN pylint --rcfile=/root/pylint.conf /opt/temp2dash/*.py
 
-CMD [ "python", "/opt/temp2dash/temp2dash.py" ]
+CMD [ "python3", "/opt/temp2dash/temp2dash.py" ]

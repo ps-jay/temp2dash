@@ -1,15 +1,15 @@
 # temp2dash
-TEMPer USB temperature to Dashing dashboard
+Raspberry Pi + envirophat to Dashing dashboard
 
 ## Build for ARM (Raspberry Pi):
 ```
 docker build -t local/temp2dash -f Dockerfile.arm .
 ```
 
-## Build for x86 (everything else!):
-```
-docker build -t local/temp2dash -f Dockerfile.x86 .
-``` 
+## Pre-req
+Setup the raspberry pi so that /dev/i2c is available
+- https://www.raspberrypi.org/forums/viewtopic.php?f=28&t=97314
+- https://learn.pimoroni.com/tutorial/sandyj/getting-started-with-enviro-phat
 
 ## Run:
 ```

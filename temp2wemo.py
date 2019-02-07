@@ -23,14 +23,20 @@ SLEEP = int(os.environ['SLEEP_TIME'])
 MONITOR_UUID = str(os.environ['MONITOR_UUID'])
 MONITOR_URL = "https://hc-ping.com/%s" % MONITOR_UUID
 
-th = TemperHandler()
-devs = th.get_devices()
-if len(devs) != 1:
-    print "Expected exactly one TEMPer device, found %d" % len(devs)
-    sys.exit(1)
-dev = devs[0]
 
-dev.set_calibration_data(scale=SCALE, offset=OFFSET)
+def get_temper():
+    th = TemperHandler()
+    devs = th.get_devices()
+    if len(devs) != 1:
+        print "Expected exactly one TEMPer device, found %d" % len(devs)
+        sys.exit(1)
+    dev = devs[0]
+
+    dev.set_calibration_data(scale=SCALE, offset=OFFSET)
+
+    return dev
+
+temper = get_temper()
 
 wemo = Environment(with_cache=False)
 wemo.start()
@@ -42,7 +48,7 @@ exceptions = 0
 ping_sent = False
 while True:
     try:
-        temperature = dev.get_temperature(sensor=SENSOR)
+        temperature = temper.get_temperature(sensor=SENSOR)
         state = power.get_state()
         current = "off"
         if state == 1:
@@ -67,14 +73,15 @@ while True:
             current,
             action,
         )
-        if datetime.datetime.now().time().minute % 2 and not ping_sent:
-            requests.post(MONITOR_URL if temperature < -8 else "%s/fail" % MONITOR_URL,
-                data="temperature=%0.1f; switch_state=%s" % (
-                    temperature,
-                    "on" if power.get_state() == 1 else "off",
+        if (datetime.datetime.now().time().minute % 10) == 0:
+            if not ping_sent:
+                requests.post(MONITOR_URL if temperature < -8 else "%s/fail" % MONITOR_URL,
+                    data="temperature=%0.1f; switch_state=%s" % (
+                        temperature,
+                        "on" if power.get_state() == 1 else "off",
+                    )
                 )
-            )
-            ping_sent = True
+                ping_sent = True
         else:
             ping_sent = False
 
@@ -82,6 +89,9 @@ while True:
         print "\nException on getting temperature\n"
         print traceback.format_exc()
         exceptions += 1
+
+        # try and reinit temper
+        temper = get_temper()
 
     finally:
         if exceptions > 10:

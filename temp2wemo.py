@@ -45,6 +45,7 @@ power = wemo.get_switch('freezer')
 
 action = ""
 exceptions = 0
+exceptions_time = 0
 ping_sent = False
 while True:
     try:
@@ -89,6 +90,7 @@ while True:
         print "\nException on getting temperature\n"
         print traceback.format_exc()
         exceptions += 1
+        exceptions_time = time.time()
 
         # try and reinit temper
         temper = get_temper()
@@ -100,5 +102,9 @@ while True:
             )
             print "Too many exceptions, exiting"
             exit(127)
+        elif exceptions > 0 and (time.time() - exceptions_time) > (30 * 60):
+            # exceptions are non-zero, but less than the threshold for exiting, AND
+            # there's been more than 30 minutes elapsed since the first exception: clear the counter
+            exceptions = 0
 
         time.sleep(SLEEP)

@@ -34,4 +34,9 @@ RUN pylint \
       --rcfile=/root/pylint.conf \
       /opt/temp2dash/*.py
 
+# If the test fails, it means libusb-1.0.so is now created by the Alpine libusb package
+# Remove the symlink if that happens in the future
+RUN test ! -f /usr/lib/libusb-1.0.so
+RUN ln -s /usr/lib/libusb-1.0.so.0 /usr/lib/libusb-1.0.so
+
 CMD [ "python", "/opt/temp2dash/temp2wemo.py" ]

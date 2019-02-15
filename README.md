@@ -14,6 +14,7 @@ docker run \
     --privileged \
     --tty \
     --restart=always \
+    --net=host \
     --name=temp2wemo \
     --env MONITOR_UUID=<healthchecks.io token> \
     --env SLEEP_TIME=<e.g. 60> \

@@ -5,7 +5,6 @@ temp2dash: Temperatures to Dashing
 # pylint: disable=invalid-name
 
 import datetime
-import json
 import os
 import sys
 import time
@@ -25,6 +24,7 @@ MONITOR_URL = "https://hc-ping.com/%s" % MONITOR_UUID
 
 
 def get_temper():
+    """Get the temperUSB device"""
     th = TemperHandler()
     devs = th.get_devices()
     if len(devs) != 1:
@@ -77,11 +77,11 @@ while True:
         if (datetime.datetime.now().time().minute % 10) == 0:
             if not ping_sent:
                 requests.post(MONITOR_URL if temperature < -8 else "%s/fail" % MONITOR_URL,
-                    data="temperature=%0.1f; switch_state=%s" % (
-                        temperature,
-                        "on" if power.get_state() == 1 else "off",
-                    )
-                )
+                              data="temperature=%0.1f; switch_state=%s" % (
+                                  temperature,
+                                  "on" if power.get_state() == 1 else "off",
+                              )
+                             )
                 ping_sent = True
         else:
             ping_sent = False
@@ -98,13 +98,18 @@ while True:
     finally:
         if exceptions > 10:
             requests.post("%s/fail" % MONITOR_URL,
-                data="Too many exceptions, exiting"
-            )
+                          data="Too many exceptions, exiting"
+                         )
             print "Too many exceptions, exiting"
             exit(127)
         elif exceptions > 0 and (time.time() - exceptions_time) > (30 * 60):
             # exceptions are non-zero, but less than the threshold for exiting, AND
             # there's been more than 30 minutes elapsed since the first exception: clear the counter
+            print u"%s - reset exception count (was: %d)" % (
+                time.strftime("%Y-%m-%d %H:%M:%S"),
+                exceptions,
+            )
+            requests.post(MONITOR_URL, data="reset exception count (was: %d)" % exceptions)
             exceptions = 0
 
         time.sleep(SLEEP)

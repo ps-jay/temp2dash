@@ -1,32 +1,26 @@
-# temp2dash
-TEMPer USB temperature to Dashing dashboard
+# temp2wemo
+TEMPer USB temperature to control a Wemo to turn on and off a freezer
 
-## Build for ARM (Raspberry Pi):
+## Build for ARM (Raspberry Pi Zero):
 ```
-docker build -t local/temp2dash -f Dockerfile.arm .
+docker build -t local/temp2wemo -f Dockerfile.arm .
 ```
-
-## Build for x86 (everything else!):
-```
-docker build -t local/temp2dash -f Dockerfile.x86 .
-``` 
 
 ## Run:
 ```
 docker run \
     --detach \
-    --memory 128m \
+    --memory 192m \
     --privileged \
     --tty \
     --restart=always \
-    --name=temp2dash \
-    --env DASHING_URL=http://<host>:3030/widgets/<id> \
-    --env DASHING_TOKEN=<the_auth_token> \
+    --name=temp2wemo \
+    --env MONITOR_UUID=<healthchecks.io token> \
     --env SLEEP_TIME=<e.g. 60> \
     --env TEMP_SENSOR=<e.g. 0, or 1> \
     --env TEMP_SCALE=<e.g. 1, 0.8, etc.> \
     --env TEMP_OFFSET=<e.g. -2, 0, etc.> \
-    local/temp2dash
+    local/temp2wemo
 ```
 
 ### P. Jay's params

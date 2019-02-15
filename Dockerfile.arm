@@ -1,4 +1,4 @@
-FROM hypriot/rpi-alpine-scratch
+FROM arm32v6/python:2.7-alpine
 
 MAINTAINER Philip Jay <phil@jay.id.au>
 
@@ -8,24 +8,21 @@ RUN apk update \
  && apk upgrade \
  && apk add \
       bash \
+      curl \
+      gcc \
       libusb \
+      musl-dev \
       openssl \
-      python \
+      python-dev \
       tzdata \
  && rm -rf /var/cache/apk/*
 
-RUN wget https://bootstrap.pypa.io/get-pip.py \
- && python get-pip.py \
- && rm -rf \
-      get-pip.py \
-      /root/.cache/
-
-RUN pip install \
-      pylint \
-      requests \
-      https://github.com/ps-jay/temper-python/archive/auto-detect-sensors-and-offset.zip \
+ADD reqs.frozen /tmp/
+RUN pip install -r /tmp/reqs.frozen \
  && rm -rf /root/.cache/
 
+RUN pip install -U pip pylint \
+ && rm -rf /root/.cache/
 ADD pylint.conf /root/pylint.conf
 
 RUN mkdir -p /opt/temp2dash
@@ -36,4 +33,4 @@ RUN pylint \
       --rcfile=/root/pylint.conf \
       /opt/temp2dash/*.py
 
-CMD [ "python", "/opt/temp2dash/temp2dash.py" ]
+CMD [ "python", "/opt/temp2dash/temp2wemo.py" ]

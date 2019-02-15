@@ -17,12 +17,13 @@ RUN apk update \
       tzdata \
  && rm -rf /var/cache/apk/*
 
-ADD reqs.frozen /tmp/
-RUN pip install -r /tmp/reqs.frozen \
+RUN pip install -U pip pipenv \
  && rm -rf /root/.cache/
 
-RUN pip install -U pip pylint \
- && rm -rf /root/.cache/
+ADD Pipfile* /tmp/
+WORKDIR /tmp
+RUN pipenv install --system --dev
+
 ADD pylint.conf /root/pylint.conf
 
 RUN mkdir -p /opt/temp2dash
